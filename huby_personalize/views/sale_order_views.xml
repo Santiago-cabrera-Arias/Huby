@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista de formulario: agregar campo debajo de cliente -->
+    <record id="view_order_form_project_name" model="ir.ui.view">
+        <field name="name">sale.order.form.project.name</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="project_name" placeholder="Ingrese el nombre del proyecto..."/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Vista tree: agregar columna de nombre del proyecto -->
+    <record id="view_order_tree_project_name" model="ir.ui.view">
+        <field name="name">sale.order.tree.project.name</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="project_name" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Vista tree de cotizaciones con onboarding: agregar columna de nombre del proyecto -->
+    <record id="view_quotation_tree_with_onboarding_project_name" model="ir.ui.view">
+        <field name="name">sale.order.list.project.name</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="project_name" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Vista de búsqueda: agregar filtro por nombre del proyecto -->
+    <record id="view_sales_order_filter_project_name" model="ir.ui.view">
+        <field name="name">sale.order.search.project.name</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+        <field name="arch" type="xml">
+            <search position="inside">
+                <field name="project_name" string="Nombre del Proyecto"
+                       filter_domain="[('project_name', 'ilike', self)]"/>
+                <filter string="Con Proyecto" name="with_project"
+                        domain="[('project_name', '!=', False)]"/>
+                <filter string="Sin Proyecto" name="without_project"
+                        domain="[('project_name', '=', False)]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter string="Nombre del Proyecto" name="group_by_project_name"
+                            context="{'group_by': 'project_name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Vista de formulario: agregar campos de fechas de entrega -->
+    <record id="view_order_form_delivery_dates" model="ir.ui.view">
+        <field name="name">sale.order.form.delivery.dates</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <field name="payment_term_id" position="after">
+                <field name="attended_by_employee_id" placeholder="Seleccione el empleado que atiende..."/>
+                <field name="is_delivery_date_locked" invisible="1"/>
+                <field name="delivery_date_first"
+                       readonly="is_delivery_date_locked"
+                       required="1"/>
+                <field name="delivery_date_second"/>
+                <field name="delivery_change_employee_id"
+                       invisible="not delivery_date_second"
+                       required="delivery_date_second"
+                       placeholder="Seleccione el empleado responsable..."/>
+                <field name="delivery_change_justification"
+                       invisible="not delivery_date_second"
+                       required="delivery_date_second"
+                       placeholder="Explique el motivo del cambio de fecha..."/>
+            </field>
+        </field>
+    </record>
+</odoo>

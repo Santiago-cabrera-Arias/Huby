@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista List -->
+    <record id="view_prohibited_customer_words_tree" model="ir.ui.view">
+        <field name="name">prohibited.customer.words.list</field>
+        <field name="model">prohibited.customer.words</field>
+        <field name="arch" type="xml">
+            <list string="Restricciones de Clientes">
+                <field name="word"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista Form -->
+    <record id="view_prohibited_customer_words_form" model="ir.ui.view">
+        <field name="name">prohibited.customer.words.form</field>
+        <field name="model">prohibited.customer.words</field>
+        <field name="arch" type="xml">
+            <form string="Restricción de Cliente">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <widget name="web_ribbon" title="Archivado" bg_color="text-bg-danger" invisible="active"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="word" placeholder="Ej: publico, general, test..."/>
+                        </group>
+                        <group>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <group>
+                        <div class="alert alert-info" role="alert">
+                            <strong>Nota:</strong> Si agrega una palabra aquí y ya existe un cliente que comienza con esta palabra,
+                            no se permitirá crear nuevos clientes cuyos nombres comiencen con la misma palabra.
+                        </div>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista de búsqueda -->
+    <record id="view_prohibited_customer_words_search" model="ir.ui.view">
+        <field name="name">prohibited.customer.words.search</field>
+        <field name="model">prohibited.customer.words</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Restricciones">
+                <field name="word" string="Palabra"
+                       filter_domain="[('word', 'ilike', self)]"/>
+                <filter string="Activos" name="active"
+                        domain="[('active', '=', True)]"/>
+                <filter string="Archivados" name="inactive"
+                        domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Acción -->
+    <record id="action_prohibited_customer_words" model="ir.actions.act_window">
+        <field name="name">Restricciones de Clientes</field>
+        <field name="res_model">prohibited.customer.words</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crear una nueva restricción de cliente
+            </p>
+            <p>
+                Las restricciones evitan que se creen nuevos clientes con nombres
+                que comiencen con estas palabras, si ya existe un cliente con la misma palabra.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menú padre: Clientes (dentro de Configuración de Ventas) -->
+    <menuitem id="menu_clientes_config"
+              name="Clientes"
+              parent="sale.menu_sale_config"
+              sequence="100"/>
+
+    <!-- Submenú: Restricciones de Clientes -->
+    <menuitem id="menu_prohibited_customer_words"
+              name="Restricciones de Clientes"
+              parent="menu_clientes_config"
+              action="action_prohibited_customer_words"
+              sequence="10"/>
+</odoo>

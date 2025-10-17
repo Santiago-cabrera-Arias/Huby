@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Definición del reporte -->
+    <record id="action_report_project_task" model="ir.actions.report">
+        <field name="name">Reporte de Tarea</field>
+        <field name="model">project.task</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">huby_personalize.report_project_task_document</field>
+        <field name="report_file">huby_personalize.report_project_task_document</field>
+        <field name="binding_model_id" ref="project.model_project_task"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Template del reporte -->
+    <template id="report_project_task_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="task">
+                <t t-set="order" t-value="task.sale_order_id"/>
+                <t t-set="company" t-value="task.company_id.sudo() if task.company_id else res_company"/>
+                <t t-call="web.external_layout">
+                    <div class="page o_huby_work_order">
+                        <style>
+                            .o_huby_work_order {
+                                font-family: 'Lato', 'Mukta', 'Helvetica', 'Arial', sans-serif;
+                                color: #000000;
+                                font-size: 12px;
+                            }
+                            .o_huby_work_order .wo-header {
+                                display: flex;
+                                justify-content: space-between;
+                                gap: 24px;
+                                align-items: flex-start;
+                                border-bottom: 2px solid #000;
+                                padding-bottom: 16px;
+                            }
+                            .o_huby_work_order .wo-header-left {
+                                flex: 2 1 0;
+                            }
+                            .o_huby_work_order .wo-number-label {
+                                font-size: 18px;
+                                letter-spacing: 2px;
+                                text-transform: uppercase;
+                                margin-bottom: 4px;
+                            }
+                            .o_huby_work_order .wo-number-value {
+                                font-size: 26px;
+                                font-weight: 600;
+                                letter-spacing: 4px;
+                            }
+                            .o_huby_work_order .wo-meta-table {
+                                margin-top: 16px;
+                                width: 100%;
+                                border-collapse: collapse;
+                            }
+                            .o_huby_work_order .wo-meta-table th {
+                                text-align: left;
+                                font-weight: 600;
+                                padding-right: 12px;
+                                white-space: nowrap;
+                            }
+                            .o_huby_work_order .wo-meta-table td {
+                                padding: 4px 0;
+                            }
+                            .o_huby_work_order .wo-header-right {
+                                flex: 1 1 0;
+                                text-align: right;
+                            }
+                            .o_huby_work_order .wo-logo {
+                                background-color: #111111;
+                                display: inline-flex;
+                                align-items: center;
+                                justify-content: center;
+                                padding: 10px 14px;
+                                border-radius: 4px;
+                            }
+                            .o_huby_work_order .wo-logo img {
+                                max-height: 48px;
+                            }
+                            .o_huby_work_order .wo-project-title {
+                                margin-top: 24px;
+                                font-size: 22px;
+                                font-weight: 600;
+                            }
+                            .o_huby_work_order .wo-client-name {
+                                font-size: 16px;
+                                color: #333333;
+                                margin-top: 4px;
+                            }
+                            .o_huby_work_order .wo-tabs {
+                                display: flex;
+                                border-bottom: 1px solid #000;
+                                margin-top: 32px;
+                                margin-bottom: 24px;
+                            }
+                            .o_huby_work_order .wo-tab {
+                                padding: 10px 24px;
+                                border: 1px solid #000;
+                                border-bottom: none;
+                                margin-right: 8px;
+                                font-weight: 500;
+                                text-transform: uppercase;
+                                font-size: 11px;
+                            }
+                            .o_huby_work_order .wo-tab.wo-active {
+                                background-color: #f4f4f4;
+                            }
+                            .o_huby_work_order .wo-products {
+                                width: 100%;
+                                border-top: 1px solid #000;
+                                margin-bottom: 28px;
+                            }
+                            .o_huby_work_order .wo-product-empty {
+                                padding: 14px;
+                                text-align: center;
+                                border-bottom: 1px solid #000;
+                            }
+                            .o_huby_work_order .wo-product-row {
+                                display: flex;
+                                justify-content: space-between;
+                                gap: 16px;
+                                padding: 12px 0;
+                                border-bottom: 1px solid #000;
+                            }
+                            .o_huby_work_order .wo-product-main {
+                                flex: 1 1 auto;
+                            }
+                            .o_huby_work_order .wo-product-name {
+                                font-weight: 600;
+                                text-transform: uppercase;
+                            }
+                            .o_huby_work_order .wo-product-description {
+                                margin-top: 6px;
+                                line-height: 1.45;
+                            }
+                            .o_huby_work_order .wo-product-qty {
+                                flex: 0 0 auto;
+                                min-width: 80px;
+                                text-align: right;
+                                font-weight: 600;
+                            }
+                            .o_huby_work_order .wo-section {
+                                margin-top: 20px;
+                            }
+                            .o_huby_work_order .wo-section-title {
+                                font-weight: 600;
+                                margin-bottom: 6px;
+                                text-transform: uppercase;
+                                letter-spacing: 1px;
+                            }
+                            .o_huby_work_order .wo-section-body {
+                                border: 1px solid #000;
+                                min-height: 80px;
+                                padding: 12px;
+                                white-space: pre-line;
+                            }
+                        </style>
+
+                        <div class="wo-header">
+                            <div class="wo-header-left">
+                                <div class="wo-number-label">Orden de Trabajo</div>
+                                <div class="wo-number-value">
+                                    <t t-esc="(order and order.name) or task.name"/>
+                                </div>
+
+                                <table class="wo-meta-table">
+                                    <tr>
+                                        <th>Atendió:</th>
+                                        <td>
+                                            <t t-esc="task.sale_attended_by.name if task.sale_attended_by else (order.attended_by_employee_id.name if order and order.attended_by_employee_id else '-')"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Fecha de cotización:</th>
+                                        <td>
+                                            <t t-if="order and order.date_order">
+                                                <span t-field="order.date_order" t-options='{"widget": "date"}'/>
+                                            </t>
+                                            <t t-else="">-</t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Fecha de entrega 1:</th>
+                                        <td>
+                                            <t t-if="order and order.delivery_date_first">
+                                                <span t-field="order.delivery_date_first" t-options='{"widget": "datetime"}'/>
+                                            </t>
+                                            <t t-else="">-</t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Fecha de entrega 2:</th>
+                                        <td>
+                                            <t t-if="order and order.delivery_date_second">
+                                                <span t-field="order.delivery_date_second" t-options='{"widget": "datetime"}'/>
+                                            </t>
+                                            <t t-else="">-</t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Etiquetas:</th>
+                                        <td>
+                                            <t t-esc="', '.join(task.tag_ids.mapped('name')) if task.tag_ids else '-'"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div class="wo-header-right">
+                                <div class="wo-logo" t-if="company.logo">
+                                    <img t-att-src="image_data_uri(company.logo)" alt="Logo"/>
+                                </div>
+                                <div class="wo-company-name" t-if="not company.logo">
+                                    <strong><t t-esc="company.name"/></strong>
+                                </div>
+                                <div class="wo-project-title">
+                                    <t t-esc="(order and order.project_name) or task.name"/>
+                                </div>
+                                <div class="wo-client-name">
+                                    <t t-esc="task.partner_id.name if task.partner_id else (order.partner_id.name if order and order.partner_id else '')"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="wo-tabs">
+                            <div class="wo-tab wo-active">Proyecto</div>
+                        </div>
+
+                        <div class="wo-products">
+                            <t t-if="not task.sale_order_line_ids">
+                                <div class="wo-product-empty">Sin productos asociados</div>
+                            </t>
+                            <t t-foreach="task.sale_order_line_ids" t-as="line">
+                                <div class="wo-product-row">
+                                    <div class="wo-product-main">
+                                        <div class="wo-product-name">
+                                            <span t-field="line.product_id.display_name"/>
+                                        </div>
+                                        <div class="wo-product-description">
+                                            <span t-field="line.name"/>
+                                        </div>
+                                    </div>
+                                    <div class="wo-product-qty">
+                                        <span t-field="line.product_uom_qty"/>
+                                        <t t-if="line.product_uom">
+                                            <span>&#160;</span>
+                                            <span t-field="line.product_uom" t-options='{"widget": "text"}'/>
+                                        </t>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+
+                        <div class="wo-section">
+                            <div class="wo-section-title">Comentarios</div>
+                            <div class="wo-section-body">
+                                <t t-if="task.observations">
+                                    <span t-field="task.observations"/>
+                                </t>
+                                <t t-else="">&#160;</t>
+                            </div>
+                        </div>
+
+                        <div class="wo-section">
+                            <div class="wo-section-title">Compras</div>
+                            <div class="wo-section-body">&#160;</div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

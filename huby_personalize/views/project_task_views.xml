@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista de formulario heredada para agregar página de productos -->
+    <record id="view_task_form_products_page" model="ir.ui.view">
+        <field name="name">project.task.form.products.page</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <!-- Agregar la página de Productos antes de la página de Descripción -->
+            <xpath expr="//page[@name='description_page']" position="before">
+                <page name="products_page" string="Productos" autofocus="autofocus">
+                    <field name="sale_order_line_ids" nolabel="1">
+                        <list create="false" delete="false" edit="false">
+                            <field name="product_id" string="Producto"/>
+                            <field name="name" string="Descripción"/>
+                            <field name="product_uom_qty" string="Cantidad"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+
+            <!-- Agregar página de Observaciones -->
+            <xpath expr="//page[@name='description_page']" position="after">
+                <page name="observations_page" string="Observaciones">
+                    <field name="observations" placeholder="Escriba aquí las observaciones sobre esta tarea..."/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Vista kanban heredada para mostrar información agrupada de productos -->
+    <record id="view_task_kanban_grouped_products" model="ir.ui.view">
+        <field name="name">project.task.kanban.grouped.products</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_kanban"/>
+        <field name="arch" type="xml">
+            <!-- Agregar campos necesarios -->
+            <xpath expr="//kanban" position="inside">
+                <field name="products_count"/>
+                <field name="sale_order_id"/>
+                <field name="sale_delivery_date"/>
+                <field name="sale_attended_by"/>
+            </xpath>
+
+            <!-- Modificar la visualización para mostrar indicador de productos agrupados -->
+            <xpath expr="//field[@name='name']" position="after">
+                <!-- Mostrar un resumen cuando la tarea tiene productos -->
+                <div t-if="record.products_count.raw_value &gt; 0"
+                     class="mt-2 p-2"
+                     style="background-color: #f8f9fa; border-radius: 4px; font-size: 0.85em;">
+                    <div class="text-muted">
+                        <i class="fa fa-cube"/>
+                        <t t-esc="record.products_count.raw_value"/>
+                        <t t-if="record.products_count.raw_value == 1">producto</t>
+                        <t t-else="">productos</t>
+                    </div>
+                </div>
+
+                <!-- Mostrar fecha de entrega y atendido por -->
+                <div t-if="record.sale_delivery_date.raw_value or record.sale_attended_by.value" class="mt-2" style="font-size: 0.85em;">
+                    <div t-if="record.sale_delivery_date.raw_value" class="text-muted d-flex align-items-center">
+                        <i class="fa fa-calendar me-1" aria-hidden="true"/>
+                        <strong class="me-1">Fecha de Entrega:</strong>
+                        <field name="sale_delivery_date" widget="datetime"/>
+                    </div>
+                    <div t-if="record.sale_attended_by.value" class="text-muted d-flex align-items-center mt-1">
+                        <i class="fa fa-user me-1" aria-hidden="true"/>
+                        <strong class="me-1">Atendido por:</strong>
+                        <field name="sale_attended_by"/>
+                    </div>
+                </div>
+
+
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Vista kanban de proyectos con fecha de entrega y atendido por -->
+    <record id="view_project_project_kanban_delivery_info" model="ir.ui.view">
+        <field name="name">project.project.kanban.delivery.info</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="inside">
+                <field name="sale_order_id"/>
+                <field name="sale_delivery_date"/>
+                <field name="sale_attended_by"/>
+            </xpath>
+
+            <xpath expr="//span[@name='partner_name']" position="replace"/>
+
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <div t-if="record.sale_delivery_date.raw_value or record.sale_attended_by.value" class="text-muted mt-1">
+                    <div t-if="record.sale_delivery_date.raw_value" class="d-flex align-items-center">
+                        <span class="fa fa-calendar me-2" aria-label="Fecha de Entrega" title="Fecha de Entrega"/>
+                        <field name="sale_delivery_date" widget="datetime"/>
+                    </div>
+                    <div t-if="record.sale_attended_by.value" class="d-flex align-items-center mt-1">
+                        <span class="fa fa-user me-2" aria-label="Atendido por" title="Atendido por"/>
+                        <field name="sale_attended_by"/>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_prohibited_customer_words_user,access.prohibited.customer.words.user,model_prohibited_customer_words,sales_team.group_sale_salesman,1,0,0,0
+access_prohibited_customer_words_manager,access.prohibited.customer.words.manager,model_prohibited_customer_words,sales_team.group_sale_manager,1,1,1,1
