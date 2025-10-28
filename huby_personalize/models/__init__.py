@@ -5,3 +5,4 @@ from . import project_task
 from . import project_project
 from . import prohibited_customer_words
 from . import res_partner
+from . import account_move

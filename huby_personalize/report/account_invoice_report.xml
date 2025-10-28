@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Definición del reporte de factura -->
+    <record id="action_report_invoice_huby" model="ir.actions.report">
+        <field name="name">Factura Huby (México)</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">huby_personalize.report_invoice_document_huby</field>
+        <field name="report_file">huby_personalize.report_invoice_document_huby</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_us"/>
+    </record>
+
+    <!-- Template principal del reporte -->
+    <template id="report_invoice_document_huby">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="lang" t-value="o.partner_id.lang"/>
+                <t t-set="base_url" t-value="o.get_base_url() or ''"/>
+                <t t-set="huby_logo" t-value="o._huby_invoice_logo()"/>
+                <t t-set="huby_tagline" t-value="o._huby_invoice_tagline()"/>
+                <t t-set="huby_footer" t-value="o._huby_invoice_footer()"/>
+                <t t-call="web.basic_layout">
+                    <div class="page huby_invoice">
+                        <style>
+                            @page {
+                                margin: 5mm 10mm 15mm 10mm;
+                            }
+                            .huby_invoice {
+                                font-family: 'Arial', 'Helvetica', sans-serif;
+                                font-size: 9pt;
+                                color: #000000;
+                                padding-top: 0;
+                            }
+                            .huby_invoice .huby-pink {
+                                color: #E91E8C;
+                            }
+                            .huby_invoice .huby-bg-pink {
+                                background-color: #E91E8C;
+                            }
+                            .huby_invoice .top-border {
+                                border-top: 3px solid #000;
+                                padding-top: 4px;
+                                margin-top: 0;
+                                margin-bottom: 2px;
+                            }
+                            .huby_invoice .company-tagline {
+                                text-align: left;
+                                border-bottom: 1px solid #000;
+                                padding-bottom: 8px;
+                                margin-bottom: 15px;
+                            }
+                            .huby_invoice .company-tagline img {
+                                height: 18px;
+                                display: inline-block;
+                            }
+                            .huby_invoice .header-section {
+                                margin-bottom: 15px;
+                            }
+                            .huby_invoice .company-logo-box {
+                                display: inline-block;
+                                padding: 0;
+                                background-color: transparent;
+                            }
+                            .huby_invoice .company-logo-box img {
+                                max-height: 55px;
+                                height: auto;
+                            }
+                            .huby_invoice .emisor-section {
+                                margin-top: 10px;
+                                font-size: 9pt;
+                            }
+                            .huby_invoice .emisor-section strong {
+                                font-size: 10pt;
+                            }
+                            .huby_invoice .folio-section {
+                                text-align: right;
+                            }
+                            .huby_invoice .folio-section div {
+                                margin-bottom: 3px;
+                                font-size: 9pt;
+                            }
+                            .huby_invoice .folio-label {
+                                font-weight: bold;
+                            }
+                            .huby_invoice .receptor-section {
+                                margin: 15px 0;
+                                padding: 10px 0;
+                                border-bottom: 1px solid #ccc;
+                                font-size: 9pt;
+                            }
+                            .huby_invoice .receptor-section strong {
+                                font-size: 10pt;
+                            }
+                            .huby_invoice .invoice-lines-table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-top: 15px;
+                                font-size: 7.5pt;
+                            }
+                            .huby_invoice .invoice-lines-table thead {
+                                background-color: #f0f0f0;
+                                border-top: 1px solid #000;
+                                border-bottom: 1px solid #000;
+                            }
+                            .huby_invoice .invoice-lines-table th {
+                                padding: 6px 3px;
+                                text-align: left;
+                                font-weight: bold;
+                                font-size: 7.5pt;
+                                vertical-align: middle;
+                            }
+                            .huby_invoice .invoice-lines-table td {
+                                padding: 6px 3px;
+                                border-bottom: 1px solid #e0e0e0;
+                                vertical-align: top;
+                                font-size: 7.5pt;
+                            }
+                            .huby_invoice .invoice-lines-table .text-right {
+                                text-align: right;
+                            }
+                            .huby_invoice .invoice-lines-table .text-center {
+                                text-align: center;
+                            }
+                            .huby_invoice .totals-section {
+                                margin-top: 15px;
+                            }
+                            .huby_invoice .totals-box {
+                                float: right;
+                                min-width: 320px;
+                            }
+                            .huby_invoice .totals-table {
+                                width: 100%;
+                                border-collapse: collapse;
+                            }
+                            .huby_invoice .totals-table td {
+                                padding: 5px 10px;
+                                font-size: 9pt;
+                            }
+                            .huby_invoice .totals-table .total-row {
+                                font-weight: bold;
+                                font-size: 11pt;
+                                border-top: 2px solid #000;
+                                border-bottom: 2px solid #000;
+                            }
+                            .huby_invoice .total-words {
+                                margin-top: 8px;
+                                font-weight: bold;
+                                font-size: 9pt;
+                            }
+                            .huby_invoice .cfdi-details {
+                                clear: both;
+                                margin-top: 20px;
+                                padding-top: 15px;
+                                border-top: 1px solid #ccc;
+                                font-size: 8pt;
+                            }
+                            .huby_invoice .cfdi-details .detail-item {
+                                margin-bottom: 5px;
+                            }
+                            .huby_invoice .cfdi-details strong {
+                                font-weight: bold;
+                            }
+                            .huby_invoice .cfdi-section {
+                                margin-top: 20px;
+                                padding: 12px;
+                                background-color: #f8f8f8;
+                                border: 1px solid #ccc;
+                                page-break-inside: avoid;
+                            }
+                            .huby_invoice .cfdi-section .cfdi-title {
+                                font-weight: bold;
+                                margin-bottom: 5px;
+                                font-size: 8pt;
+                            }
+                            .huby_invoice .cfdi-section .cfdi-content {
+                                font-size: 6.5pt;
+                                word-break: break-all;
+                                margin-bottom: 8px;
+                                line-height: 1.3;
+                            }
+                            .huby_invoice .cfdi-footer {
+                                text-align: center;
+                                font-weight: bold;
+                                margin-top: 12px;
+                                padding: 8px;
+                                background-color: #fff;
+                                border: 1px solid #000;
+                                font-size: 9pt;
+                            }
+                            .huby_invoice .observations-section {
+                                margin-top: 20px;
+                                font-size: 8pt;
+                                page-break-inside: avoid;
+                            }
+                            .huby_invoice .observations-section .obs-title {
+                                font-weight: bold;
+                                margin-bottom: 5px;
+                            }
+                            .huby_invoice .observations-section ul {
+                                margin: 5px 0;
+                                padding-left: 18px;
+                            }
+                            .huby_invoice .observations-section li {
+                                margin-bottom: 2px;
+                                line-height: 1.4;
+                            }
+                            .huby_invoice .footer-info {
+                                text-align: center;
+                                margin-top: 20px;
+                                padding-top: 10px;
+                                border-top: 1px solid #000;
+                                font-size: 8pt;
+                            }
+                            .huby_invoice .footer-contact {
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                gap: 15px;
+                                margin-bottom: 5px;
+                            }
+                            .huby_invoice .footer-address {
+                                font-size: 8pt;
+                                margin-top: 5px;
+                            }
+                            .huby_invoice .page-number {
+                                text-align: right;
+                                font-size: 8pt;
+                                margin-top: 10px;
+                            }
+                        </style>
+
+                        <!-- Borde superior y tagline -->
+                        <div class="top-border">
+                            <div class="company-tagline">
+                                <img t-if="huby_tagline" t-att-src="'data:image/png;base64,%s' % huby_tagline" alt="Profesionales en Comunicación Visual y Digital" style="height: 20px; vertical-align: middle;"/>
+                            </div>
+                        </div>
+
+                        <!-- Header: Logo, Emisor y Folio -->
+                        <div class="row header-section">
+                            <div class="col-6">
+                                <!-- Logo de Huby desde assets -->
+                                <div class="company-logo-box">
+                                    <img t-if="huby_logo" t-att-src="'data:image/png;base64,%s' % huby_logo" alt="Huby Logo"/>
+                                </div>
+
+                                <!-- Información del Emisor -->
+                                <div class="emisor-section">
+                                    <strong>Emisor:</strong><br/>
+                                    <span>HUBY CHACHACHA SA DE CV</span><br/>
+                                    <span>HCA211101SR8</span><br/>
+                                    <t t-if="o.company_id.l10n_mx_edi_fiscal_regime">
+                                        <span>Regimen fiscal: </span>
+                                        <span t-field="o.company_id.l10n_mx_edi_fiscal_regime"/><br/>
+                                    </t>
+                                </div>
+                            </div>
+
+                            <div class="col-6 folio-section">
+                                <div>
+                                    <span class="folio-label">Folio:</span>
+                                    <span t-field="o.name"/>
+                                </div>
+                                <div>
+                                    <span class="folio-label">Fecha:</span>
+                                    <span t-field="o.invoice_date" t-options='{"widget": "date", "format": "dd/MM/yyyy"}'/>
+                                    <span t-if="o.create_date">
+                                        <span t-field="o.create_date" t-options='{"widget": "datetime", "format": "HH:mm:ss"}'/>
+                                    </span>
+                                </div>
+                                <div>
+                                    <span class="folio-label">Lugar de expedición:</span>
+                                    <span>77533</span>
+                                </div>
+                                <div>
+                                    <span class="folio-label">Tipo de comprobante:</span>
+                                    <span t-if="o.move_type == 'out_invoice'">Ingreso</span>
+                                    <span t-elif="o.move_type == 'out_refund'">Egreso</span>
+                                    <span t-else="">Otros</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Información del Receptor -->
+                        <div class="receptor-section">
+                            <strong>Receptor:</strong><br/>
+                            <span t-field="o.partner_id.name"/><br/>
+                            <t t-if="o.partner_id.vat">
+                                <span t-field="o.partner_id.vat"/><br/>
+                            </t>
+                            <t t-if="o.partner_id.l10n_mx_edi_fiscal_regime">
+                                <span>Regimen fiscal: </span>
+                                <span t-field="o.partner_id.l10n_mx_edi_fiscal_regime"/>
+                                <t t-if="o.partner_id.zip">
+                                    <span> C.P </span>
+                                    <span t-field="o.partner_id.zip"/>
+                                </t>
+                                <br/>
+                            </t>
+                            <t t-set="cfdi_values" t-value="o._l10n_mx_edi_get_extra_invoice_report_values()"/>
+                            <t t-if="cfdi_values.get('usage')">
+                                <span>Uso CFDI: </span>
+                                <span t-out="cfdi_values.get('usage_desc', 'Gastos en general')"/>
+                            </t>
+                        </div>
+
+                        <!-- Tabla de líneas de factura -->
+                        <table class="invoice-lines-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 7%;">Clave<br/>Producto</th>
+                                    <th style="width: 5%;" class="text-center">Cantidad</th>
+                                    <th style="width: 8%;">Unidad</th>
+                                    <th style="width: 30%;">Descripción</th>
+                                    <th style="width: 9%;" class="text-right">Precio<br/>Unitario</th>
+                                    <th style="width: 9%;" class="text-right">Importe</th>
+                                    <th style="width: 7%;">Impuesto</th>
+                                    <th style="width: 6%;">Tipo<br/>Factor</th>
+                                    <th style="width: 8%;" class="text-right">Tasa<br/>Cuota</th>
+                                    <th style="width: 9%;" class="text-right">Importe<br/>Impuesto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.invoice_line_ids" t-as="line">
+                                    <t t-if="line.display_type in (False, 'product')">
+                                    <tr>
+                                        <!-- Clave Producto -->
+                                        <td>
+                                            <t t-set="prod_code" t-value="line.product_id.unspsc_code_id.code if line.product_id and line.product_id.unspsc_code_id else ''"/>
+                                            <span t-out="prod_code or '82101500'"/>
+                                        </td>
+                                        <!-- Cantidad -->
+                                        <td class="text-center">
+                                            <span t-esc="'%.3f' % line.quantity"/>
+                                        </td>
+                                        <!-- Unidad -->
+                                        <td>
+                                            <t t-set="uom_code" t-value="line.product_uom_id.unspsc_code_id.code if line.product_uom_id and line.product_uom_id.unspsc_code_id else 'E48'"/>
+                                            <span t-out="uom_code"/> -<br/>
+                                            <span t-out="line.product_uom_id.name if line.product_uom_id else 'Unidad'"/>
+                                        </td>
+                                        <!-- Descripción -->
+                                        <td>
+                                            <span t-out="line.name or ''"/>
+                                        </td>
+                                        <!-- Precio Unitario -->
+                                        <td class="text-right">
+                                            $ <span t-esc="'{:,.2f}'.format(line.price_unit)"/>
+                                        </td>
+                                        <!-- Importe -->
+                                        <td class="text-right">
+                                            $ <span t-esc="'{:,.2f}'.format(line.price_subtotal)"/>
+                                        </td>
+                                        <!-- Impuesto -->
+                                        <td>
+                                            <t t-if="line.tax_ids">
+                                                <t t-foreach="line.tax_ids" t-as="tax">
+                                                    IVA<br/>
+                                                </t>
+                                            </t>
+                                            <t t-else="">-</t>
+                                        </td>
+                                        <!-- Tipo Factor -->
+                                        <td>
+                                            <t t-if="line.tax_ids">
+                                                <t t-foreach="line.tax_ids" t-as="tax">
+                                                    Tasa<br/>
+                                                </t>
+                                            </t>
+                                            <t t-else="">-</t>
+                                        </td>
+                                        <!-- Tasa Cuota -->
+                                        <td class="text-right">
+                                            <t t-if="line.tax_ids">
+                                                <t t-foreach="line.tax_ids" t-as="tax">
+                                                    <span t-esc="'%.4f' % (tax.amount / 100.0)"/><br/>
+                                                </t>
+                                            </t>
+                                            <t t-else="">-</t>
+                                        </td>
+                                        <!-- Importe Impuesto -->
+                                        <td class="text-right">
+                                            <t t-set="tax_amount" t-value="line.price_total - line.price_subtotal"/>
+                                            $ <span t-esc="'{:,.2f}'.format(tax_amount)"/>
+                                        </td>
+                                    </tr>
+                                    </t>
+                                    <t t-elif="line.display_type == 'line_section'">
+                                    <tr>
+                                        <td colspan="10" style="font-weight: bold; border-bottom: 1px solid #000;">
+                                            <span t-out="line.name or ''"/>
+                                        </td>
+                                    </tr>
+                                    </t>
+                                    <t t-elif="line.display_type == 'line_note'">
+                                    <tr>
+                                        <td colspan="10" style="font-style: italic;">
+                                            <span t-out="line.name or ''"/>
+                                        </td>
+                                    </tr>
+                                    </t>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <!-- Totales -->
+                        <div class="totals-section">
+                            <div class="totals-box">
+                                <table class="totals-table">
+                                    <tr>
+                                        <td>Subtotal</td>
+                                        <td class="text-right">
+                                            <span>$ </span>
+                                            <span t-esc="'{:,.2f}'.format(o.amount_untaxed)"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total impuestos trasladados</td>
+                                        <td class="text-right">
+                                            <span>$ </span>
+                                            <span t-esc="'{:,.2f}'.format(o.amount_tax)"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="total-row">
+                                        <td>Total</td>
+                                        <td class="text-right">
+                                            <span>$ </span>
+                                            <span t-esc="'{:,.2f}'.format(o.amount_total)"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div class="total-words">
+                                    <t t-set="amount_text" t-value="o.currency_id.amount_to_text(o.amount_total)"/>
+                                    <span t-out="amount_text.upper()"/> M. N.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Detalles CFDI -->
+                        <div class="cfdi-details">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="detail-item">
+                                        <strong>Método de pago</strong><br/>
+                                        <span t-out="cfdi_values.get('payment_method', 'Pago en una sola exhibición')"/>
+                                    </div>
+                                    <div class="detail-item">
+                                        <strong>Forma de pago</strong><br/>
+                                        <span t-out="cfdi_values.get('payment_way', '03 - Transferencia electrónica de fondos')"/>
+                                    </div>
+                                    <div class="detail-item">
+                                        <strong>Moneda</strong><br/>
+                                        <span t-field="o.currency_id.name"/>
+                                    </div>
+                                    <div class="detail-item">
+                                        <strong>Tipo de cambio</strong><br/>
+                                        <span>1</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="detail-item">
+                                        <strong>Fecha y hora de certificación</strong><br/>
+                                        <span t-out="cfdi_values.get('stamp_date', '')"/>
+                                    </div>
+                                    <div class="detail-item">
+                                        <strong>Número de certificado</strong><br/>
+                                        <span t-out="cfdi_values.get('certificate_number', '')"/>
+                                    </div>
+                                    <div class="detail-item">
+                                        <strong>Certificado SAT</strong><br/>
+                                        <span t-out="cfdi_values.get('certificate_sat_number', '')"/>
+                                    </div>
+                                    <div class="detail-item">
+                                        <strong>Folio fiscal</strong><br/>
+                                        <span t-out="cfdi_values.get('uuid', '')"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sección CFDI con QR y sellos -->
+                        <div class="cfdi-section">
+                            <div class="row">
+                                <div class="col-3 text-center">
+                                    <t t-if="cfdi_values.get('barcode_src')">
+                                        <img alt="QR Code" t-att-src="cfdi_values.get('barcode_src')" style="max-width: 130px;"/>
+                                    </t>
+                                </div>
+                                <div class="col-9">
+                                    <div class="cfdi-title">Cadena Original del Complemento digital del SAT</div>
+                                    <div class="cfdi-content">
+                                        <span t-out="cfdi_values.get('cadena', '')"/>
+                                    </div>
+
+                                    <div class="cfdi-title">Sello Digital del CFDI</div>
+                                    <div class="cfdi-content">
+                                        <span t-out="cfdi_values.get('sello', '')"/>
+                                    </div>
+
+                                    <div class="cfdi-title">Sello del SAT</div>
+                                    <div class="cfdi-content">
+                                        <span t-out="cfdi_values.get('sello_sat', '')"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="cfdi-footer">
+                                ESTE DOCUMENTO ES UNA REPRESENTACIÓN IMPRESA DE UN CFDI
+                            </div>
+                        </div>
+
+                        <!-- Observaciones / Políticas -->
+                        <div class="observations-section">
+                            <div class="obs-title">Observaciones: POLÍTICAS Y CONDICIONES</div>
+                            <ul>
+                                <li>El tiempo de entrega se estima una vez que pasa a producción el proyecto.</li>
+                                <li>La cotización tiene vigencia de 6 días hábiles después de su elaboración.</li>
+                                <li>Se requiere autorización de la cotización para iniciar con la producción.</li>
+                                <li>Se requiere el pago por anticipado en proyectos con precio menor a $3,000.00 M.N.</li>
+                                <li>Es indispensable que envíe por correo el comprobante de su transferencia por el pago.</li>
+                                <li>El horario de entrega de materiales producidos es de 10:00 a 18:30 horas.</li>
+                                <li>Los trabajos de instalación no incluyen obra civil e instalaciones eléctricas.</li>
+                                <li>Queda bajo conformidad con las políticas de la empresa la aceptación de el presente presupuesto.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Footer con información de contacto -->
+                        <div class="footer-info">
+                            <div style="text-align: center; margin-bottom: 10px;">
+                                <img t-if="huby_footer" t-att-src="'data:image/png;base64,%s' % huby_footer" alt="Contacto Huby" style="max-width: 100%; height: auto;"/>
+                            </div>
+                            <div class="footer-address">
+                                <strong>HUBY CHACHACHA SA DE CV</strong> | RFC: HCA211101SR8<br/>
+                                Paseo del Olmo L 1, M 24, Sm 313 Álamos II, Cancún, Quintana Roo, México. CP 77533
+                            </div>
+                        </div>
+
+                        <!-- Número de página -->
+                        <div class="page-number">
+                            Hoja: <span class="page"/> / <span class="topage"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

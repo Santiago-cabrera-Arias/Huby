@@ -15,13 +15,14 @@
         - Agrupación de tareas de proyectos: une múltiples productos de una orden en una sola tarea
     """,
     'author': 'Huby',
-    'depends': ['sale', 'sales_team', 'hr', 'sale_project'],
+    'depends': ['sale', 'sales_team', 'hr', 'sale_project', 'account', 'l10n_mx_edi'],
     'data': [
         'security/ir.model.access.csv',
         'views/sale_order_views.xml',
         'views/prohibited_customer_words_views.xml',
         'views/project_task_views.xml',
         'report/project_task_report.xml',
+        'report/account_invoice_report.xml',
     ],
     'installable': True,
     'application': False,
