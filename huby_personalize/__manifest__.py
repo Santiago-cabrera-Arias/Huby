@@ -23,6 +23,7 @@
         'views/project_task_views.xml',
         'report/project_task_report.xml',
         'report/account_invoice_report.xml',
+        'report/sale_order_report.xml',
     ],
     'installable': True,
     'application': False,

@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Formato de papel sin márgenes -->
+    <record id="paperformat_project_task" model="report.paperformat">
+        <field name="name">Orden de Trabajo Sin Márgenes</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">96</field>
+    </record>
+
     <!-- Definición del reporte -->
     <record id="action_report_project_task" model="ir.actions.report">
         <field name="name">Reporte de Tarea</field>
@@ -9,6 +24,7 @@
         <field name="report_file">huby_personalize.report_project_task_document</field>
         <field name="binding_model_id" ref="project.model_project_task"/>
         <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_project_task"/>
     </record>
 
     <!-- Template del reporte -->
@@ -17,141 +33,194 @@
             <t t-foreach="docs" t-as="task">
                 <t t-set="order" t-value="task.sale_order_id"/>
                 <t t-set="company" t-value="task.company_id.sudo() if task.company_id else res_company"/>
-                <t t-call="web.external_layout">
-                    <div class="page o_huby_work_order">
+                <div class="page o_huby_work_order">
+                        <meta charset="UTF-8"/>
                         <style>
+                            @charset "UTF-8";
+                            * {
+                                margin: 0;
+                                padding: 0;
+                                box-sizing: border-box;
+                            }
+                            @page {
+                                margin: 0;
+                                padding: 0;
+                                size: A4 portrait;
+                            }
+                            html, body {
+                                margin: 0 !important;
+                                padding: 0 !important;
+                                height: 100%;
+                            }
+                            .page {
+                                margin: 0 !important;
+                                padding: 15mm 15mm 15mm 15mm !important;
+                                min-height: 100%;
+                                page-break-after: always;
+                            }
                             .o_huby_work_order {
                                 font-family: 'Lato', 'Mukta', 'Helvetica', 'Arial', sans-serif;
-                                color: #000000;
-                                font-size: 12px;
+                                color: #2c2c2c;
+                                font-size: 11.5px;
+                                line-height: 1.5;
                             }
                             .o_huby_work_order .wo-header {
                                 display: flex;
                                 justify-content: space-between;
                                 gap: 24px;
                                 align-items: flex-start;
-                                border-bottom: 2px solid #000;
-                                padding-bottom: 16px;
+                                border-bottom: 1.5px solid #333333;
+                                padding-bottom: 20px;
+                                margin-bottom: 8px;
                             }
                             .o_huby_work_order .wo-header-left {
                                 flex: 2 1 0;
                             }
                             .o_huby_work_order .wo-number-label {
-                                font-size: 18px;
-                                letter-spacing: 2px;
+                                font-size: 16px;
+                                letter-spacing: 1.5px;
                                 text-transform: uppercase;
-                                margin-bottom: 4px;
+                                margin-bottom: 6px;
+                                font-weight: 500;
+                                color: #555555;
                             }
                             .o_huby_work_order .wo-number-value {
-                                font-size: 26px;
-                                font-weight: 600;
-                                letter-spacing: 4px;
+                                font-size: 24px;
+                                font-weight: 500;
+                                letter-spacing: 2px;
+                                color: #1a1a1a;
                             }
                             .o_huby_work_order .wo-meta-table {
-                                margin-top: 16px;
+                                margin-top: 18px;
                                 width: 100%;
                                 border-collapse: collapse;
                             }
                             .o_huby_work_order .wo-meta-table th {
                                 text-align: left;
-                                font-weight: 600;
-                                padding-right: 12px;
+                                font-weight: 500;
+                                padding-right: 14px;
                                 white-space: nowrap;
+                                color: #444444;
+                                font-size: 11px;
                             }
                             .o_huby_work_order .wo-meta-table td {
-                                padding: 4px 0;
+                                padding: 5px 0;
+                                color: #2c2c2c;
                             }
                             .o_huby_work_order .wo-header-right {
                                 flex: 1 1 0;
-                                text-align: right;
+                                text-align: left;
                             }
                             .o_huby_work_order .wo-logo {
-                                background-color: #111111;
                                 display: inline-flex;
                                 align-items: center;
-                                justify-content: center;
-                                padding: 10px 14px;
-                                border-radius: 4px;
+                                justify-content: flex-start;
+                                padding: 0;
+                                margin-bottom: 12px;
                             }
                             .o_huby_work_order .wo-logo img {
-                                max-height: 48px;
+                                max-height: 50px;
+                                max-width: 180px;
+                                object-fit: contain;
                             }
                             .o_huby_work_order .wo-project-title {
-                                margin-top: 24px;
-                                font-size: 22px;
-                                font-weight: 600;
+                                margin-top: 20px;
+                                font-size: 19px;
+                                font-weight: 500;
+                                color: #1a1a1a;
+                                line-height: 1.3;
                             }
                             .o_huby_work_order .wo-client-name {
-                                font-size: 16px;
-                                color: #333333;
-                                margin-top: 4px;
+                                font-size: 14px;
+                                color: #555555;
+                                margin-top: 6px;
+                                font-weight: 400;
                             }
                             .o_huby_work_order .wo-tabs {
                                 display: flex;
-                                border-bottom: 1px solid #000;
-                                margin-top: 32px;
-                                margin-bottom: 24px;
+                                border-bottom: 1.5px solid #d0d0d0;
+                                margin-top: 28px;
+                                margin-bottom: 20px;
                             }
                             .o_huby_work_order .wo-tab {
-                                padding: 10px 24px;
-                                border: 1px solid #000;
+                                padding: 10px 22px;
+                                border: 1px solid #d0d0d0;
                                 border-bottom: none;
-                                margin-right: 8px;
+                                margin-right: 6px;
                                 font-weight: 500;
                                 text-transform: uppercase;
-                                font-size: 11px;
+                                font-size: 10px;
+                                letter-spacing: 0.5px;
+                                color: #555555;
                             }
                             .o_huby_work_order .wo-tab.wo-active {
-                                background-color: #f4f4f4;
+                                background-color: #f8f8f8;
+                                color: #2c2c2c;
                             }
                             .o_huby_work_order .wo-products {
                                 width: 100%;
-                                border-top: 1px solid #000;
-                                margin-bottom: 28px;
+                                border-top: 1.5px solid #d0d0d0;
+                                margin-bottom: 24px;
                             }
                             .o_huby_work_order .wo-product-empty {
-                                padding: 14px;
+                                padding: 16px;
                                 text-align: center;
-                                border-bottom: 1px solid #000;
+                                border-bottom: 1px solid #e0e0e0;
+                                color: #888888;
+                                font-style: italic;
                             }
                             .o_huby_work_order .wo-product-row {
                                 display: flex;
                                 justify-content: space-between;
                                 gap: 16px;
-                                padding: 12px 0;
-                                border-bottom: 1px solid #000;
+                                padding: 14px 0;
+                                border-bottom: 1px solid #e0e0e0;
                             }
                             .o_huby_work_order .wo-product-main {
                                 flex: 1 1 auto;
                             }
                             .o_huby_work_order .wo-product-name {
-                                font-weight: 600;
+                                font-weight: 500;
                                 text-transform: uppercase;
+                                font-size: 11px;
+                                letter-spacing: 0.3px;
+                                color: #2c2c2c;
                             }
                             .o_huby_work_order .wo-product-description {
                                 margin-top: 6px;
-                                line-height: 1.45;
+                                line-height: 1.5;
+                                color: #555555;
+                                font-size: 11px;
                             }
                             .o_huby_work_order .wo-product-qty {
                                 flex: 0 0 auto;
-                                min-width: 80px;
+                                min-width: 90px;
                                 text-align: right;
-                                font-weight: 600;
+                                font-weight: 500;
+                                color: #2c2c2c;
+                                font-size: 11.5px;
                             }
                             .o_huby_work_order .wo-section {
-                                margin-top: 20px;
+                                margin-top: 22px;
                             }
                             .o_huby_work_order .wo-section-title {
-                                font-weight: 600;
-                                margin-bottom: 6px;
+                                font-weight: 500;
+                                margin-bottom: 8px;
                                 text-transform: uppercase;
-                                letter-spacing: 1px;
+                                letter-spacing: 0.5px;
+                                font-size: 11px;
+                                color: #444444;
                             }
                             .o_huby_work_order .wo-section-body {
-                                border: 1px solid #000;
+                                border: 1px solid #d0d0d0;
                                 min-height: 80px;
-                                padding: 12px;
+                                padding: 14px;
                                 white-space: pre-line;
+                                background-color: #fafafa;
+                                border-radius: 2px;
+                                font-size: 11px;
+                                line-height: 1.6;
+                                color: #555555;
                             }
                         </style>
 
@@ -164,13 +233,13 @@
 
                                 <table class="wo-meta-table">
                                     <tr>
-                                        <th>Atendió:</th>
+                                        <th>Atendio:</th>
                                         <td>
                                             <t t-esc="task.sale_attended_by.name if task.sale_attended_by else (order.attended_by_employee_id.name if order and order.attended_by_employee_id else '-')"/>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Fecha de cotización:</th>
+                                        <th>Fecha de cotizacion:</th>
                                         <td>
                                             <t t-if="order and order.date_order">
                                                 <span t-field="order.date_order" t-options='{"widget": "date"}'/>
@@ -240,10 +309,10 @@
                                         </div>
                                     </div>
                                     <div class="wo-product-qty">
-                                        <span t-field="line.product_uom_qty"/>
+                                        <t t-esc="'%.2f' % line.product_uom_qty"/>
                                         <t t-if="line.product_uom">
-                                            <span>&#160;</span>
-                                            <span t-field="line.product_uom" t-options='{"widget": "text"}'/>
+                                            <span> </span>
+                                            <t t-esc="line.product_uom.name"/>
                                         </t>
                                     </div>
                                 </div>
@@ -251,21 +320,20 @@
                         </div>
 
                         <div class="wo-section">
-                            <div class="wo-section-title">Comentarios</div>
+                            <div class="wo-section-title">Observaciones</div>
                             <div class="wo-section-body">
                                 <t t-if="task.observations">
-                                    <span t-field="task.observations"/>
+                                    <t t-esc="task.observations"/>
                                 </t>
-                                <t t-else="">&#160;</t>
+                                <t t-else=""> </t>
                             </div>
                         </div>
 
                         <div class="wo-section">
                             <div class="wo-section-title">Compras</div>
-                            <div class="wo-section-body">&#160;</div>
+                            <div class="wo-section-body"> </div>
                         </div>
-                    </div>
-                </t>
+                </div>
             </t>
         </t>
     </template>

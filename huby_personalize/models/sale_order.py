@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
+import base64
+import os
 from odoo import fields, models, api
 from odoo.exceptions import ValidationError
+from odoo.modules.module import get_module_path
 
 
 class SaleOrder(models.Model):

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Formato de papel sin márgenes para cotización -->
+    <record id="paperformat_quotation_huby" model="report.paperformat">
+        <field name="name">Cotizacion Huby</field>
+        <field name="default" eval="False"/>
+        <field name="format">Letter</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">1</field>
+        <field name="margin_bottom">1</field>
+        <field name="margin_left">1</field>
+        <field name="margin_right">1</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <!-- Nuevo reporte de cotización Huby -->
+    <record id="action_report_saleorder_huby" model="ir.actions.report">
+        <field name="name">Cotización Huby</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">huby_personalize.report_saleorder_huby</field>
+        <field name="report_file">huby_personalize.report_saleorder_huby</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_quotation_huby"/>
+        <field name="print_report_name">(object.state in ('draft', 'sent') and 'Cotizacion - %s' % (object.name)) or 'Orden - %s' % (object.name)</field>
+    </record>
+
+    <!-- Template personalizado del reporte de cotización -->
+    <template id="report_saleorder_huby">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="base_url" t-value="doc.get_base_url() or ''"/>
+                <t t-set="huby_static_prefix" t-value="(base_url.rstrip('/') if base_url else '') + '/huby_personalize/static/src/img/'"/>
+                <t t-set="project_name_display" t-value="doc.project_id and doc.project_id.name or (getattr(doc, 'project_name', False) or '')"/>
+
+                <style>
+                    @charset "UTF-8";
+                    @page {
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        size: Letter portrait;
+                    }
+                    html, body {
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        background: #f4f4f4;
+                        color: #2c2c2c;
+                        font-family: "Lato", "Helvetica", sans-serif;
+                        height: 100%;
+                    }
+                    .huby-page {
+                        position: relative;
+                        background: #ffffff;
+                        padding: 18mm 20mm 45mm 20mm;
+                        min-height: 100vh;
+                        box-sizing: border-box;
+                    }
+                    .huby-header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: 10mm;
+                    }
+                    .huby-header .logo {
+                        max-height: 55px;
+                    }
+                    .huby-header .company-info {
+                        text-align: right;
+                        font-size: 9pt;
+                        line-height: 1.4;
+                    }
+                    .huby-banner {
+                        margin-bottom: 8mm;
+                        text-align: center;
+                    }
+                    .huby-banner img {
+                        width: 100%;
+                        max-height: 90px;
+                        object-fit: cover;
+                    }
+                    .huby-banner hr {
+                        border: 0;
+                        border-top: 2px solid #875A7B;
+                        margin: 0;
+                    }
+                    .huby-project-box {
+                        margin: 6mm 0 12mm;
+                        padding: 8px 14px;
+                        border-left: 4px solid #875A7B;
+                        background: #f9f3f7;
+                        font-size: 13px;
+                        color: #4a3b4f;
+                    }
+                    .huby-content {
+                        padding: 6mm 0 0;
+                    }
+                    .huby-content .page {
+                        margin: 0;
+                        padding: 0;
+                        border: none;
+                        box-shadow: none;
+                        background: transparent;
+                    }
+                    .huby-footer {
+                        position: fixed;
+                        left: 20mm;
+                        right: 20mm;
+                        bottom: 12mm;
+                        text-align: center;
+                        font-size: 8pt;
+                        color: #444;
+                        border-top: 1px solid #d0d0d0;
+                        padding-top: 6px;
+                    }
+                    .huby-footer img {
+                        max-height: 45px;
+                        margin-bottom: 4px;
+                    }
+                </style>
+
+                <div class="huby-page">
+                    <div class="huby-header">
+                        <div>
+                            <img t-if="doc.company_id.logo" t-att-src="'/web/image/res.company/%s/logo' % doc.company_id.id" alt="Logo" class="logo"/>
+                            <img t-else="" t-att-src="huby_static_prefix + 'logo.png' if huby_static_prefix else '/huby_personalize/static/src/img/logo.png'" alt="Logo" class="logo"/>
+                        </div>
+                        <div class="company-info">
+                            <strong t-out="doc.company_id.name or 'HUBY CHACHACHA SA DE CV'"/>
+                            <div t-if="doc.company_id.vat">RFC: <span t-out="doc.company_id.vat"/></div>
+                            <div t-if="doc.company_id.partner_id.contact_address">
+                                <span t-out="doc.company_id.partner_id.contact_address.replace('\n', ', ')"/>
+                            </div>
+                            <div t-if="doc.company_id.phone">Tel: <span t-out="doc.company_id.phone"/></div>
+                            <div t-if="doc.company_id.email"><span t-out="doc.company_id.email"/></div>
+                        </div>
+                    </div>
+
+                    <div class="huby-banner">
+                        <img t-att-src="huby_static_prefix + 'lema.png' if huby_static_prefix else '/huby_personalize/static/src/img/lema.png'" alt="Profesionales en Comunicación Visual y Digital"/>
+                    </div>
+
+                    <t t-if="project_name_display">
+                        <div class="huby-project-box">
+                            <strong>Proyecto:</strong>
+                            <span t-esc="project_name_display"/>
+                        </div>
+                    </t>
+
+                    <div class="huby-content">
+                        <t t-call="sale.report_saleorder_document" t-lang="doc.partner_id.lang"/>
+                    </div>
+                </div>
+
+                <div class="huby-footer">
+                    <div>
+                        <img t-att-src="huby_static_prefix + 'pie_pagina.png' if huby_static_prefix else '/huby_personalize/static/src/img/pie_pagina.png'" alt="Pie Huby"/>
+                    </div>
+                    <div>
+                        <strong t-out="doc.company_id.name or 'HUBY CHACHACHA SA DE CV'"/>
+                        <t t-if="doc.company_id.phone"> | Tel: <span t-out="doc.company_id.phone"/></t>
+                        <t t-if="doc.company_id.website"> | <span t-out="doc.company_id.website"/></t>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
