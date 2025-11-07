@@ -3,11 +3,36 @@ import base64
 import os
 from odoo import fields, models, api
 from odoo.exceptions import ValidationError
-from odoo.modules.module import get_module_path
+from odoo.modules.module import get_module_resource
 
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
+
+    def _huby_static_image_base64(self, filename):
+        """Return the base64 representation of a static image bundled in the module."""
+        if not filename:
+            return False
+        resource_path = get_module_resource('huby_personalize', 'static', 'src', 'img', filename)
+        if not resource_path:
+            return False
+        try:
+            with open(resource_path, 'rb') as image_file:
+                return base64.b64encode(image_file.read()).decode('ascii')
+        except OSError:
+            return False
+
+    def _huby_sale_logo(self):
+        """Retorna el logo de HUBY en base64 para el reporte de cotización."""
+        return self._huby_static_image_base64('logo.png')
+
+    def _huby_sale_tagline(self):
+        """Retorna el banner/lema de HUBY en base64 para el reporte de cotización."""
+        return self._huby_static_image_base64('lema.png')
+
+    def _huby_sale_footer(self):
+        """Retorna el pie de página de HUBY en base64 para el reporte de cotización."""
+        return self._huby_static_image_base64('pie_pagina.png')
 
     project_name = fields.Char(
         string='Nombre del Proyecto',
@@ -88,3 +113,14 @@ class SaleOrder(models.Model):
                     raise ValidationError(
                         'Debe proporcionar una justificación para el cambio de fecha de entrega.'
                     )
+
+    @api.constrains('attended_by_employee_id')
+    def _check_attended_by_employee(self):
+        """
+        Validar que el campo 'Atendido por' esté lleno antes de guardar
+        """
+        for order in self:
+            if not order.attended_by_employee_id:
+                raise ValidationError(
+                    'Debe seleccionar el empleado que atiende esta orden de venta.'
+                )
