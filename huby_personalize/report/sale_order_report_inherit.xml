@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Heredar el reporte estándar de cotización de Odoo para agregar título del proyecto y atendido por -->
+    <template id="report_saleorder_document_inherit" inherit_id="sale.report_saleorder_document">
+        
+        <!-- Agregar Título del Proyecto en la sección de informaciones -->
+        <xpath expr="//div[@id='informations']/div[@name='informations_reference']" position="after">
+            <div t-if="doc.project_name" class="col" name="informations_project_name">
+                <strong>Título del Proyecto</strong>
+                <div t-field="doc.project_name"/>
+            </div>
+        </xpath>
+        
+        <!-- Agregar Atendido por en la sección de informaciones -->
+        <xpath expr="//div[@id='informations']/div[@name='informations_date']" position="after">
+            <div t-if="doc.attended_by_employee_id" class="col" name="informations_attended_by">
+                <strong>Atendido por</strong>
+                <div t-field="doc.attended_by_employee_id"/>
+            </div>
+        </xpath>
+        
+    </template>
+</odoo>

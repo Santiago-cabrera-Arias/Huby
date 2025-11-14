@@ -24,6 +24,7 @@
         'report/project_task_report.xml',
         'report/account_invoice_report.xml',
         'report/sale_order_report.xml',
+        'report/sale_order_report_inherit.xml',
     ],
     'installable': True,
     'application': False,
