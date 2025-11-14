@@ -3,11 +3,11 @@
     <!-- Heredar el reporte estándar de cotización de Odoo para agregar título del proyecto y atendido por -->
     <template id="report_saleorder_document_inherit" inherit_id="sale.report_saleorder_document">
         
-        <!-- Agregar Título del Proyecto en la sección de informaciones -->
-        <xpath expr="//div[@id='informations']/div[@name='informations_reference']" position="after">
-            <div t-if="doc.project_name" class="col" name="informations_project_name">
-                <strong>Título del Proyecto</strong>
-                <div t-field="doc.project_name"/>
+        <!-- Agregar Título del Proyecto antes del título de la cotización -->
+        <xpath expr="//t[@t-set='layout_document_title']" position="before">
+            <div t-if="doc.project_name" class="mb-3">
+                <strong>Título del Proyecto: </strong>
+                <span t-field="doc.project_name"/>
             </div>
         </xpath>
         
