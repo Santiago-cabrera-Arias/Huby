@@ -112,6 +112,8 @@
                             .o_huby_work_order .wo-header-right {
                                 flex: 1 1 0;
                                 text-align: left;
+                                display: flex;
+                                flex-direction: column;
                             }
                             .o_huby_work_order .wo-logo {
                                 display: inline-flex;
@@ -119,6 +121,7 @@
                                 justify-content: flex-start;
                                 padding: 0;
                                 margin-bottom: 12px;
+                                order: -1;
                             }
                             .o_huby_work_order .wo-logo img {
                                 max-height: 50px;
