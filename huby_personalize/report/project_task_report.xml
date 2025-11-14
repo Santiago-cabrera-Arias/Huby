@@ -122,7 +122,6 @@
                                 justify-content: flex-end;
                                 padding: 0;
                                 margin-bottom: 12px;
-                                order: -1;
                             }
                             .o_huby_work_order .wo-logo img {
                                 max-height: 50px;
