@@ -73,6 +73,12 @@
                                 padding-bottom: 20px;
                                 margin-bottom: 8px;
                             }
+                            .o_huby_work_order .wo-logo-top {
+                                display: flex;
+                                justify-content: flex-end;
+                                align-items: center;
+                                margin-bottom: 12px;
+                            }
                             .o_huby_work_order .wo-header-left {
                                 flex: 2 1 0;
                             }
@@ -121,8 +127,7 @@
                                 align-items: center;
                                 justify-content: flex-end;
                                 padding: 0;
-                                margin-bottom: 20px;
-                                margin-top: 0;
+                                margin: 0;
                             }
                             .o_huby_work_order .wo-logo img {
                                 max-height: 50px;
@@ -234,6 +239,15 @@
                             }
                         </style>
 
+                        <div class="wo-logo-top">
+                            <div class="wo-logo" t-if="company.logo">
+                                <img t-att-src="image_data_uri(company.logo)" alt="Logo"/>
+                            </div>
+                            <div class="wo-company-name" t-if="not company.logo">
+                                <strong><t t-esc="company.name"/></strong>
+                            </div>
+                        </div>
+
                         <div class="wo-header">
                             <div class="wo-header-left">
                                 <div class="wo-number-label">Orden de Trabajo</div>
@@ -279,12 +293,6 @@
                             </div>
 
                             <div class="wo-header-right">
-                                <div class="wo-logo" t-if="company.logo">
-                                    <img t-att-src="image_data_uri(company.logo)" alt="Logo"/>
-                                </div>
-                                <div class="wo-company-name" t-if="not company.logo">
-                                    <strong><t t-esc="company.name"/></strong>
-                                </div>
                                 <div class="wo-project-title">
                                     Proyecto: <t t-esc="(order and order.project_name) or task.name"/>
                                 </div>
