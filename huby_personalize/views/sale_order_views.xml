@@ -43,14 +43,14 @@
         <field name="inherit_id" ref="sale.view_sales_order_filter"/>
         <field name="arch" type="xml">
             <search position="inside">
-                <field name="project_name" string="Nombre del Proyecto"
+                <field name="project_name" string="Proyecto"
                        filter_domain="[('project_name', 'ilike', self)]"/>
                 <filter string="Con Proyecto" name="with_project"
                         domain="[('project_name', '!=', False)]"/>
                 <filter string="Sin Proyecto" name="without_project"
                         domain="[('project_name', '=', False)]"/>
                 <group expand="0" string="Agrupar por">
-                    <filter string="Nombre del Proyecto" name="group_by_project_name"
+                    <filter string="Proyecto" name="group_by_project_name"
                             context="{'group_by': 'project_name'}"/>
                 </group>
             </search>

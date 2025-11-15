@@ -35,7 +35,7 @@ class SaleOrder(models.Model):
         return self._huby_static_image_base64('pie_pagina.png')
 
     project_name = fields.Char(
-        string='Nombre del Proyecto',
+        string='Proyecto',
         help='Nombre del proyecto asociado a esta cotización',
         required=True,
         tracking=True,
