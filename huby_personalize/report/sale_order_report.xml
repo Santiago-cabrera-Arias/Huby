@@ -74,7 +74,7 @@
 
                     <!-- Título del Proyecto -->
                     <div t-if="doc.project_name" style="margin: 15px 0; padding: 8px 12px; border-left: 3px solid #000; background-color: #f5f5f5;">
-                        <strong>Título del Proyecto: </strong><span t-field="doc.project_name"/>
+                        <strong>Proyecto: </strong><span t-field="doc.project_name"/>
                     </div>
 
                     <!-- Título -->

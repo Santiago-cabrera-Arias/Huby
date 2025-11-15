@@ -25,6 +25,7 @@
         <field name="binding_model_id" ref="project.model_project_task"/>
         <field name="binding_type">report</field>
         <field name="paperformat_id" ref="paperformat_project_task"/>
+        <field name="print_report_name">("Orden de trabajo - %s" % (object.sale_order_id.name or object.name or 'reporte')).replace('/', '-')</field>
     </record>
 
     <!-- Template del reporte -->
