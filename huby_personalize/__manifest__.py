@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Huby Personalize',
-    'version': '18.0.1.0.0',
+    'version': '18.0.1.0.1',
     'category': 'Sales',
     'summary': 'Personalización para agregar nombre de proyecto en cotizaciones',
     'description': """
