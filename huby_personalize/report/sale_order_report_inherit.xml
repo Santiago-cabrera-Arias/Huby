@@ -6,7 +6,7 @@
         <!-- Agregar Título del Proyecto antes del título de la cotización -->
         <xpath expr="//t[@t-set='layout_document_title']" position="before">
             <div t-if="doc.project_name" class="mb-3">
-                <strong>Título del Proyecto: </strong>
+                <strong>Proyecto: </strong>
                 <span t-field="doc.project_name"/>
             </div>
         </xpath>
