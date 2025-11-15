@@ -234,6 +234,14 @@
                             }
                         </style>
 
+
+                        <div style="margin-top: 10px; padding: 5px 0; border-bottom: 1px solid #e0e0e0;">
+                            <span style="font-weight: 500; font-size: 12px; color: #444444;">Etiquetas: </span>
+                            <span style="font-size: 12px; color: #555555;">
+                                <t t-esc="', '.join(task.tag_ids.mapped('name')) if task.tag_ids else '-'"/>
+                            </span>
+                        </div>
+
                         <div class="wo-header">
                             <div class="wo-header-left">
                                 <div class="wo-number-label">Orden de Trabajo</div>
@@ -294,12 +302,7 @@
                             </div>
                         </div>
 
-                        <div style="margin-top: 10px; padding: 5px 0; border-bottom: 1px solid #e0e0e0;">
-                            <span style="font-weight: 500; font-size: 12px; color: #444444;">Etiquetas: </span>
-                            <span style="font-size: 12px; color: #555555;">
-                                <t t-esc="', '.join(task.tag_ids.mapped('name')) if task.tag_ids else '-'"/>
-                            </span>
-                        </div>
+              
 
                         <div class="wo-tabs">
                             <div class="wo-tab wo-active">Proyecto</div>
