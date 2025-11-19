@@ -5,10 +5,17 @@
         
         <!-- Agregar Título del Proyecto antes del título de la cotización -->
         <xpath expr="//t[@t-set='layout_document_title']" position="before">
-            <div t-if="doc.project_name" class="mb-3">
-                <strong>Proyecto: </strong>
+            <div t-if="doc.project_name"
+                 class="mb-3"
+                 style="margin-top: 12px; margin-bottom: 20px; display: inline-flex; column-gap: 8px;">
+                <strong style="margin: 0;">Proyecto</strong>
                 <span t-field="doc.project_name"/>
             </div>
+        </xpath>
+
+        <!-- Dar un poco más de respiro a la fila de información principal -->
+        <xpath expr="//div[@id='informations']" position="attributes">
+            <attribute name="style">margin-bottom: 2rem; row-gap: 12px; column-gap: 16px;</attribute>
         </xpath>
         
         <!-- Agregar Atendido por en la sección de informaciones -->
