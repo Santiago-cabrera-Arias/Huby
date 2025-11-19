@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+  <data noupdate="0">
     <!-- Limpiar la vista anterior para evitar herencias residuales -->
     <delete id="report_invoice_document_huby"/>
 
@@ -617,4 +618,5 @@
             </t>
         </t>
     </template>
+  </data>
 </odoo>
