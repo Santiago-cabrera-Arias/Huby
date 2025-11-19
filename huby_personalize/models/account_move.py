@@ -40,8 +40,10 @@ class AccountMove(models.Model):
             return cfdi_infos
 
         barcode_src = cfdi_infos.get('barcode_src')
-        if barcode_src:
-            base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url') or ''
+        if barcode_src and barcode_src.startswith('/'):
+            # wkhtmltopdf recupera los activos a través de report.url si está definido
+            icp = self.env['ir.config_parameter'].sudo()
+            base_url = icp.get_param('report.url') or icp.get_param('web.base.url') or ''
             if base_url:
                 cfdi_infos['barcode_src'] = urljoin(base_url.rstrip('/') + '/', barcode_src.lstrip('/'))
 
