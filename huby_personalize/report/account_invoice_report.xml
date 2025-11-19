@@ -91,10 +91,16 @@
                         .huby_invoice .header-section {
                                 margin-bottom: 15px;
                             }
+                        .huby_invoice .company-header-left {
+                                display: flex;
+                                align-items: flex-start;
+                                gap: 18px;
+                            }
                         .huby_invoice .company-logo-box {
                                 display: inline-block;
                                 padding: 0;
                                 background-color: transparent;
+                                flex-shrink: 0;
                             }
                         .huby_invoice .company-logo-box img {
                                 max-height: 55px;
@@ -102,6 +108,7 @@
                             }
                         .huby_invoice .emisor-section {
                                 margin-top: 10px;
+                                padding-left: 5px;
                                 font-size: 9pt;
                             }
                         .huby_invoice .emisor-section strong {
@@ -296,7 +303,7 @@
 
                         <!-- Header: Logo, Emisor y Folio -->
                         <div class="row header-section">
-                            <div class="col-6">
+                            <div class="col-6 company-header-left">
                                 <!-- Logo de Huby desde assets -->
                                 <div class="company-logo-box">
                                     <img t-if="huby_logo" t-att-src="'data:image/png;base64,%s' % huby_logo" alt="Huby Logo"/>
