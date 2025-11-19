@@ -33,9 +33,17 @@ class AccountMove(models.Model):
     def _huby_invoice_footer(self):
         return self._huby_static_image_base64('pie_pagina.png')
 
+    def _get_amount_total_in_words_es(self):
+        """Obtener el monto total en palabras en español."""
+        # Forzar el idioma español para la conversión de número a texto
+        currency = self.currency_id.with_context(lang='es_MX')
+        return currency.amount_to_text(self.amount_total)
+
     def _l10n_mx_edi_get_extra_invoice_report_values(self):
         """Ensure barcode sources use the absolute URL so wkhtmltopdf can fetch them."""
-        cfdi_infos = super()._l10n_mx_edi_get_extra_invoice_report_values()
+        # Forzar contexto en español mexicano para los textos del CFDI
+        self_lang = self.with_context(lang='es_MX')
+        cfdi_infos = super(AccountMove, self_lang)._l10n_mx_edi_get_extra_invoice_report_values()
         if not cfdi_infos:
             return cfdi_infos
 
