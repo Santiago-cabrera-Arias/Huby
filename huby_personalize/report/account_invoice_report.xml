@@ -20,23 +20,30 @@
         <field name="name">Factura Huby (México)</field>
         <field name="model">account.move</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">huby_personalize.report_invoice_document_huby</field>
-        <field name="report_file">huby_personalize.report_invoice_document_huby</field>
+        <field name="report_name">huby_personalize.report_invoice_huby_main</field>
+        <field name="report_file">huby_personalize.report_invoice_huby_main</field>
         <field name="binding_model_id" ref="account.model_account_move"/>
         <field name="binding_type">report</field>
         <field name="paperformat_id" ref="paperformat_invoice_huby"/>
     </record>
 
     <!-- Template principal del reporte -->
-    <template id="report_invoice_document_huby" name="Huby Invoice Document">
+    <template id="report_invoice_huby_main">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
-                <t t-set="lang" t-value="o.partner_id.lang"/>
-                <t t-set="base_url" t-value="o.get_base_url() or ''"/>
-                <t t-set="huby_logo" t-value="o._huby_invoice_logo()"/>
-                <t t-set="huby_tagline" t-value="o._huby_invoice_tagline()"/>
-                <t t-set="huby_footer" t-value="o._huby_invoice_footer()"/>
-                <div class="page huby_invoice">
+                <t t-call="huby_personalize.report_invoice_document_huby" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <!-- Template del documento de factura -->
+    <template id="report_invoice_document_huby">
+        <t t-set="lang" t-value="o.partner_id.lang"/>
+        <t t-set="base_url" t-value="o.get_base_url() or ''"/>
+        <t t-set="huby_logo" t-value="o._huby_invoice_logo()"/>
+        <t t-set="huby_tagline" t-value="o._huby_invoice_tagline()"/>
+        <t t-set="huby_footer" t-value="o._huby_invoice_footer()"/>
+        <div class="page huby_invoice">
                     <meta charset="UTF-8"/>
                     <style>
                         @charset "UTF-8";
@@ -597,8 +604,6 @@
                         <div class="page-number">
                             Hoja: <span class="page"/> / <span class="topage"/>
                         </div>
-                </div>
-            </t>
-        </t>
+        </div>
     </template>
 </odoo>
