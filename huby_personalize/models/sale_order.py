@@ -58,6 +58,27 @@ class SaleOrder(models.Model):
         copy=False,
     )
 
+    # Campos legados para compatibilidad con vistas heredadas (no se usan en UI)
+    delivery_date_second = fields.Datetime(
+        string='Segunda Fecha de Entrega (legacy)',
+        help='Campo legado para compatibilidad; no usar.',
+        tracking=False,
+        copy=False,
+    )
+    delivery_change_employee_id = fields.Many2one(
+        'hr.employee',
+        string='Empleado Responsable (legacy)',
+        help='Campo legado para compatibilidad; no usar.',
+        tracking=False,
+        copy=False,
+    )
+    delivery_change_justification = fields.Text(
+        string='Justificación del Cambio (legacy)',
+        help='Campo legado para compatibilidad; no usar.',
+        tracking=False,
+        copy=False,
+    )
+
     # Campo computado para saber si la primera fecha ya fue establecida
     is_delivery_date_locked = fields.Boolean(
         string='Primera Fecha Bloqueada',
