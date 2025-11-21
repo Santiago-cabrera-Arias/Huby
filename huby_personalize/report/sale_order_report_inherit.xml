@@ -2,6 +2,16 @@
 <odoo>
     <!-- Heredar el reporte estándar de cotización de Odoo para agregar título del proyecto y atendido por -->
     <template id="report_saleorder_document_inherit" inherit_id="sale.report_saleorder_document">
+
+        <!-- Ocultar los placeholders vacíos (cámara/imagen) que wkhtmltopdf renderiza cuando no hay contenido -->
+        <xpath expr="//div[@class='page']" position="before">
+            <style>
+                /* Los bloques oe_structure son solo contenedores de edición, no deben verse en el PDF */
+                .oe_structure { display: none !important; }
+                /* Ocultar imágenes sin src para evitar el placeholder de cámara sobre la cotización */
+                img:not([src]), img[src=""] { display: none !important; }
+            </style>
+        </xpath>
         
         <!-- Agregar Título del Proyecto antes del título de la cotización -->
         <xpath expr="//t[@t-set='layout_document_title']" position="before">
