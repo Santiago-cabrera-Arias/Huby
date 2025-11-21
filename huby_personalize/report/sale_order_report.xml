@@ -36,6 +36,12 @@
 
                 <div class="page" style="font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #333;">
                     <meta charset="UTF-8"/>
+                    <style>
+                        /* Evitar que wkhtmltopdf dibuje el placeholder de cámara cuando falta una imagen */
+                        img:not([src]), img[src=""] { display: none !important; }
+                        /* Los contenedores de edición de Odoo no deben verse en el PDF */
+                        .oe_structure { display: none !important; }
+                    </style>
 
                     <!-- Banner profesionales - arriba de todo -->
                     <div style="text-align: center; margin-bottom: 15px;">
