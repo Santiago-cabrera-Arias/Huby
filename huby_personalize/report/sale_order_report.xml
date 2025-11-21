@@ -71,14 +71,19 @@
                         </tr>
                     </table>
 
-                    <!-- Proyecto -->
-                    <div t-if="doc.project_id" style="margin: 15px 0; padding: 8px 12px; border-left: 3px solid #000; background-color: #f5f5f5;">
-                        <strong>Proyecto: </strong><span t-field="doc.project_id.name"/>
-                    </div>
-
-                    <!-- Título del Proyecto -->
-                    <div t-if="doc.project_name" style="margin: 15px 0; padding: 8px 12px; border-left: 3px solid #000; background-color: #f5f5f5;">
-                        <strong>Proyecto: </strong><span t-field="doc.project_name"/>
+                    <!-- Proyecto destacado (usa project_name si existe, sino el proyecto vinculado) -->
+                    <div t-if="doc.project_name or doc.project_id" style="margin: 18px 0; padding: 12px 14px; border-left: 4px solid #000; background-color: #f5f5f5;">
+                        <div style="font-size: 12pt; letter-spacing: 0.5px; text-transform: uppercase; color: #444; margin-bottom: 4px;">
+                            Proyecto
+                        </div>
+                        <div style="font-size: 18pt; font-weight: bold; color: #000; line-height: 1.1;">
+                            <t t-if="doc.project_name">
+                                <span t-field="doc.project_name"/>
+                            </t>
+                            <t t-elif="doc.project_id">
+                                <span t-field="doc.project_id.name"/>
+                            </t>
+                        </div>
                     </div>
 
                     <!-- Título -->

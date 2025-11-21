@@ -281,15 +281,6 @@
                                             <t t-else="">-</t>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <th>Fecha de entrega 2:</th>
-                                        <td>
-                                            <t t-if="order and order.delivery_date_second">
-                                                <span t-field="order.delivery_date_second" t-options='{"widget": "datetime"}'/>
-                                            </t>
-                                            <t t-else="">-</t>
-                                        </td>
-                                    </tr>
                                 </table>
                             </div>
 
