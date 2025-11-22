@@ -18,7 +18,10 @@
             <div t-if="doc.project_name"
                  class="mb-3"
                  style="margin-top: 10px; margin-bottom: 18px; display: block;">
-                <div style="font-size: 16pt; font-weight: 600; color: #000; line-height: 1.2;">
+                <div style="font-size: 20pt; font-weight: 600; line-height: 1.1;">
+                    Proyecto:
+                </div>
+                <div style="font-size: 18pt; font-weight: 600; color: #000; line-height: 1.4;">
                     <span t-field="doc.project_name"/>
                 </div>
             </div>
