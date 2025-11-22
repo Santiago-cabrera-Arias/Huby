@@ -106,3 +106,22 @@ class SaleOrder(models.Model):
                 raise ValidationError(
                     'Debe seleccionar el empleado que atiende esta orden de venta.'
                 )
+
+    def action_confirm(self):
+        """Al confirmar, crear un evento en calendario con la fecha de entrega."""
+        res = super().action_confirm()
+
+        for order in self:
+            if order.delivery_date_first:
+                event_vals = {
+                    'name': order.project_name or order.name,
+                    'start': order.delivery_date_first,
+                    'stop': order.delivery_date_first,
+                    'partner_ids': [(4, order.partner_id.id)] if order.partner_id else [],
+                    'sale_order_id': order.id,
+                    'description': f'Entrega prevista para {order.name}',
+                    'allday': False,
+                }
+                self.env['calendar.event'].sudo().create(event_vals)
+
+        return res
