@@ -113,17 +113,36 @@ class SaleOrder(models.Model):
 
         CalendarEvent = self.env.get('calendar.event')
         if CalendarEvent:
+            sale_model_id = self.env['ir.model']._get_id('sale.order')
+            default_duration = timedelta(hours=1)
             for order in self:
-                if order.delivery_date_first:
-                    event_vals = {
-                        'name': order.project_name or order.name,
-                        'start': order.delivery_date_first,
-                        'stop': order.delivery_date_first,
-                        'partner_ids': [(4, order.partner_id.id)] if order.partner_id else [],
-                        'sale_order_id': order.id,
-                        'description': f'Entrega prevista para {order.name}',
-                        'allday': False,
-                    }
+                if not order.delivery_date_first:
+                    continue
+
+                start = order.delivery_date_first
+                stop = start + default_duration
+
+                # Evitar duplicados si se reconfirma: uno por pedido
+                existing = CalendarEvent.sudo().search([
+                    ('res_model_id', '=', sale_model_id),
+                    ('res_id', '=', order.id),
+                ], limit=1)
+
+                event_vals = {
+                    'name': order.project_name or order.name,
+                    'start': start,
+                    'stop': stop,
+                    'user_id': order.user_id.id or self.env.user.id,
+                    'partner_ids': [(6, 0, list({pid for pid in [order.partner_id.id if order.partner_id else None, order.user_id.partner_id.id if order.user_id else None] if pid}))],
+                    'res_model_id': sale_model_id,
+                    'res_id': order.id,
+                    'description': f'Entrega prevista para {order.name}',
+                    'allday': False,
+                }
+
+                if existing:
+                    existing.write(event_vals)
+                else:
                     CalendarEvent.sudo().create(event_vals)
 
         return res
