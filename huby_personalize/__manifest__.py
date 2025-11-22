@@ -15,7 +15,7 @@
         - Agrupación de tareas de proyectos: une múltiples productos de una orden en una sola tarea
     """,
     'author': 'Huby',
-    'depends': ['sale', 'sales_team', 'hr', 'sale_project', 'account', 'l10n_mx_edi'],
+    'depends': ['sale', 'sales_team', 'hr', 'sale_project', 'account', 'l10n_mx_edi', 'calendar'],
     'data': [
         'security/ir.model.access.csv',
         'views/sale_order_views.xml',
