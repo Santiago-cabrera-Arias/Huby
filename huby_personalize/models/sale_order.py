@@ -145,4 +145,21 @@ class SaleOrder(models.Model):
                 else:
                     CalendarEvent.sudo().create(event_vals)
 
+        # Sincronizar la fecha de entrega en las tareas del proyecto para que aparezcan en el calendario de proyectos
+        Task = self.env['project.task']
+        for order in self:
+            if not order.delivery_date_first:
+                continue
+
+            tasks = Task.sudo().search([('sale_order_id', '=', order.id)])
+            if not tasks:
+                continue
+
+            start_dt = order.delivery_date_first
+            tasks.write({
+                'date_deadline': start_dt.date(),
+                'planned_date_begin': start_dt,
+                'planned_date_end': start_dt + timedelta(hours=1),
+            })
+
         return res
