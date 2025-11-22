@@ -159,8 +159,6 @@ class SaleOrder(models.Model):
             start_dt = order.delivery_date_first
             tasks.write({
                 'date_deadline': start_dt.date(),
-                'planned_date_begin': start_dt,
-                'planned_date_end': start_dt + timedelta(hours=1),
             })
 
         return res
