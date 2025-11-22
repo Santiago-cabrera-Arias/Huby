@@ -25,7 +25,6 @@
         <field name="paperformat_id" ref="paperformat_quotation_huby"/>
         <!-- Quitar binding para que no aparezca en el menú/imprimir -->
         <field name="binding_model_id" eval="False"/>
-        <field name="binding_type" eval="False"/>
     </record>
 
     <!-- Template del reporte simple y limpio con UTF-8 e imágenes -->
