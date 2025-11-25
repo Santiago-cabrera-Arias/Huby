@@ -405,8 +405,11 @@
                                             <span t-out="uom_code"/> -<br/>
                                             <span t-out="line.product_uom_id.name if line.product_uom_id else 'Unidad'"/>
                                         </td>
-                                        <!-- Descripción -->
+                                        <!-- Descripción + código UNSPSC del producto -->
                                         <td>
+                                            <t t-if="line.product_id and line.product_id.unspsc_code_id">
+                                                <span>[<t t-esc="line.product_id.unspsc_code_id.code"/>] </span>
+                                            </t>
                                             <span t-out="line.name or ''"/>
                                         </td>
                                         <!-- Precio Unitario -->
@@ -606,5 +609,20 @@
                             Hoja: <span class="page"/> / <span class="topage"/>
                         </div>
         </div>
+    </template>
+
+    <!-- Agregar código SAT (UNSPSC de la unidad) en la factura original -->
+    <template id="huby_invoice_add_uom_sat_code" inherit_id="account.report_invoice_document">
+        <xpath expr="//table[@name='invoice_line_table']//td[@name='td_quantity']" position="replace">
+            <td name="td_quantity" class="text-end">
+                <span t-field="line.quantity">3.00</span>
+                <span t-field="line.product_uom_id" groups="uom.group_uom">units</span>
+                <t t-if="line.product_uom_id and line.product_uom_id.unspsc_code_id">
+                    <span> (</span>
+                    <span t-esc="line.product_uom_id.unspsc_code_id.code">E48</span>
+                    <span>)</span>
+                </t>
+            </td>
+        </xpath>
     </template>
 </odoo>
