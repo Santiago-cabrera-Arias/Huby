@@ -618,9 +618,9 @@
                 <span t-field="line.quantity">3.00</span>
                 <span t-field="line.product_uom_id" groups="uom.group_uom">units</span>
                 <t t-if="line.product_uom_id and line.product_uom_id.unspsc_code_id">
-                    <span> (</span>
+                    <br/>
+                    <span>USPCS: </span>
                     <span t-esc="line.product_uom_id.unspsc_code_id.code">E48</span>
-                    <span>)</span>
                 </t>
             </td>
         </xpath>
