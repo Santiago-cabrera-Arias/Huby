@@ -40,6 +40,7 @@
                 <field name="sale_order_id"/>
                 <field name="sale_delivery_date"/>
                 <field name="sale_attended_by"/>
+                <field name="date_deadline"/>
             </xpath>
 
             <!-- Modificar la visualización para mostrar indicador de productos agrupados -->
@@ -56,12 +57,12 @@
                     </div>
                 </div>
 
-                <!-- Mostrar fecha de entrega y atendido por -->
-                <div t-if="record.sale_delivery_date.raw_value or record.sale_attended_by.value" class="mt-2" style="font-size: 0.85em;">
-                    <div t-if="record.sale_delivery_date.raw_value" class="text-muted d-flex align-items-center">
+                <!-- Mostrar fecha límite del proceso y atendido por -->
+                <div t-if="record.date_deadline.raw_value or record.sale_attended_by.value" class="mt-2" style="font-size: 0.85em;">
+                    <div t-if="record.date_deadline.raw_value" class="text-muted d-flex align-items-center">
                         <i class="fa fa-calendar me-1" aria-hidden="true"/>
-                        <strong class="me-1">Fecha de Entrega:</strong>
-                        <field name="sale_delivery_date" widget="datetime"/>
+                        <strong class="me-1">Fecha límite:</strong>
+                        <field name="date_deadline" widget="datetime"/>
                     </div>
                     <div t-if="record.sale_attended_by.value" class="text-muted d-flex align-items-center mt-1">
                         <i class="fa fa-user me-1" aria-hidden="true"/>

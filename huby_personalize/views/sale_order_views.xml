@@ -20,6 +20,7 @@
         <field name="arch" type="xml">
             <field name="partner_id" position="after">
                 <field name="project_name" optional="show"/>
+                <field name="attended_by_employee_id" optional="show"/>
             </field>
         </field>
     </record>
@@ -32,6 +33,7 @@
         <field name="arch" type="xml">
             <field name="partner_id" position="after">
                 <field name="project_name" optional="show"/>
+                <field name="attended_by_employee_id" optional="show"/>
             </field>
         </field>
     </record>
@@ -70,6 +72,28 @@
                        readonly="is_delivery_date_locked"
                        required="1"/>
             </field>
+        </field>
+    </record>
+
+    <!-- Vista kanban: mostrar campo 'Atendido por' -->
+    <record id="view_sale_order_kanban_attended_by" model="ir.ui.view">
+        <field name="name">sale.order.kanban.attended.by</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sale_order_kanban"/>
+        <field name="arch" type="xml">
+            <!-- Hacer disponible el campo en kanban -->
+            <xpath expr="//kanban" position="inside">
+                <field name="attended_by_employee_id"/>
+            </xpath>
+
+            <!-- Mostrar 'Atendido por' debajo de la información principal -->
+            <xpath expr="//footer" position="inside">
+                <div t-if="record.attended_by_employee_id.value"
+                     class="d-flex text-muted mt-1">
+                    <strong class="me-1">Atendido por:</strong>
+                    <field name="attended_by_employee_id"/>
+                </div>
+            </xpath>
         </field>
     </record>
 </odoo>

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import base64
 import os
-from datetime import timedelta
 from odoo import fields, models, api
 from odoo.exceptions import ValidationError
 from odoo.modules.module import get_module_resource
@@ -68,7 +67,7 @@ class SaleOrder(models.Model):
     )
     delivery_change_employee_id = fields.Many2one(
         'hr.employee',
-        string='Empleado Responsable (legacy)',
+        string='Empleado Responsable (legacy)',                 
         help='Campo legado para compatibilidad; no usar.',
         tracking=False,
         copy=False,
@@ -112,53 +111,17 @@ class SaleOrder(models.Model):
         """Al confirmar, crear un evento en calendario con la fecha de entrega."""
         res = super().action_confirm()
 
-        CalendarEvent = self.env.get('calendar.event')
-        if CalendarEvent:
-            sale_model_id = self.env['ir.model']._get_id('sale.order')
-            default_duration = timedelta(hours=1)
-            for order in self:
-                if not order.delivery_date_first:
-                    continue
-
-                start = order.delivery_date_first
-                stop = start + default_duration
-
-                # Evitar duplicados si se reconfirma: uno por pedido
-                existing = CalendarEvent.sudo().search([
-                    ('res_model_id', '=', sale_model_id),
-                    ('res_id', '=', order.id),
-                ], limit=1)
-
+        for order in self:
+            if order.delivery_date_first:
                 event_vals = {
                     'name': order.project_name or order.name,
-                    'start': start,
-                    'stop': stop,
-                    'user_id': order.user_id.id or self.env.user.id,
-                    'partner_ids': [(6, 0, list({pid for pid in [order.partner_id.id if order.partner_id else None, order.user_id.partner_id.id if order.user_id else None] if pid}))],
-                    'res_model_id': sale_model_id,
-                    'res_id': order.id,
+                    'start': order.delivery_date_first,
+                    'stop': order.delivery_date_first,
+                    'partner_ids': [(4, order.partner_id.id)] if order.partner_id else [],
+                    'sale_order_id': order.id,
                     'description': f'Entrega prevista para {order.name}',
                     'allday': False,
                 }
-
-                if existing:
-                    existing.write(event_vals)
-                else:
-                    CalendarEvent.sudo().create(event_vals)
-
-        # Sincronizar la fecha de entrega en las tareas del proyecto para que aparezcan en el calendario de proyectos
-        Task = self.env['project.task']
-        for order in self:
-            if not order.delivery_date_first:
-                continue
-
-            tasks = Task.sudo().search([('sale_order_id', '=', order.id)])
-            if not tasks:
-                continue
-
-            start_dt = order.delivery_date_first
-            tasks.write({
-                'date_deadline': start_dt.date(),
-            })
+                self.env['calendar.event'].sudo().create(event_vals)
 
         return res
