@@ -118,7 +118,6 @@ class SaleOrder(models.Model):
                     'start': order.delivery_date_first,
                     'stop': order.delivery_date_first,
                     'partner_ids': [(4, order.partner_id.id)] if order.partner_id else [],
-                    'sale_order_id': order.id,
                     'description': f'Entrega prevista para {order.name}',
                     'allday': False,
                 }
