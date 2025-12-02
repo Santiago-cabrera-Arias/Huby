@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Account Move helpers for Huby reports."""
 import base64
-from urllib.parse import urljoin
 
 # pylint: disable=import-error
 from odoo import models
@@ -39,20 +38,3 @@ class AccountMove(models.Model):
         currency = self.currency_id.with_context(lang='es_MX')
         return currency.amount_to_text(self.amount_total)
 
-    def _l10n_mx_edi_get_extra_invoice_report_values(self):
-        """Ensure barcode sources use the absolute URL so wkhtmltopdf can fetch them."""
-        # Forzar contexto en español mexicano para los textos del CFDI
-        self_lang = self.with_context(lang='es_MX')
-        cfdi_infos = super(AccountMove, self_lang)._l10n_mx_edi_get_extra_invoice_report_values()
-        if not cfdi_infos:
-            return cfdi_infos
-
-        barcode_src = cfdi_infos.get('barcode_src')
-        if barcode_src and barcode_src.startswith('/'):
-            # wkhtmltopdf recupera los activos a través de report.url si está definido
-            icp = self.env['ir.config_parameter'].sudo()
-            base_url = icp.get_param('report.url') or icp.get_param('web.base.url') or ''
-            if base_url:
-                cfdi_infos['barcode_src'] = urljoin(base_url.rstrip('/') + '/', barcode_src.lstrip('/'))
-
-        return cfdi_infos
