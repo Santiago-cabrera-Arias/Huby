@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Fix para bases donde falta el xmlid uom.product_uom_dozen.
+        Si no existe, forcecreate=1 crea la UoM "Dozens" con los
+        mismos valores base que el módulo oficial uom.
+    -->
+    <record id="uom.product_uom_dozen" model="uom.uom" forcecreate="1">
+        <field name="category_id" ref="uom.product_uom_categ_unit"/>
+        <field name="name">Dozens</field>
+        <field name="factor_inv" eval="12"/>
+        <field name="uom_type">bigger</field>
+    </record>
+</odoo>
+
