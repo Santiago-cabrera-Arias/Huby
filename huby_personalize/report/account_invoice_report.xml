@@ -552,7 +552,7 @@
                             <div class="row">
                                 <div class="col-3 text-center">
                                     <t t-if="o.x_l10n_mx_edi_qr_text">
-                                        <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('QR', quote_plus(o.x_l10n_mx_edi_qr_text or ''), 120, 120)"
+                                        <img t-att-src="'/report/barcode/?barcode_type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('QR', quote_plus(o.x_l10n_mx_edi_qr_text or ''), 120, 120)"
                                              alt="QR CFDI"/>
                                     </t>
                                     <t t-elif="cfdi_values.get('barcode_src')">
@@ -633,7 +633,7 @@
     <template id="huby_invoice_add_qr_original" inherit_id="l10n_mx_edi.report_invoice_document">
         <xpath expr="//div[@id='complement']//div[contains(@class, 'barcode')]//img" position="replace">
             <t t-if="o.x_l10n_mx_edi_qr_text">
-                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('QR', quote_plus(o.x_l10n_mx_edi_qr_text or ''), 120, 120)"
+                <img t-att-src="'/report/barcode/?barcode_type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('QR', quote_plus(o.x_l10n_mx_edi_qr_text or ''), 120, 120)"
                      alt="QR CFDI"/>
             </t>
             <t t-else="">
