@@ -631,4 +631,18 @@
             </td>
         </xpath>
     </template>
+
+    <!-- Agregar QR CFDI a la factura original de l10n_mx_edi -->
+    <template id="huby_invoice_add_qr_original" inherit_id="l10n_mx_edi.report_invoice_document">
+        <xpath expr=\"//div[@id='complement']//div[contains(@class, 'barcode')]//img\" position=\"replace\">
+            <t t-if="o.l10n_mx_edi_qr_code">
+                <img t-att-src="'data:image/png;base64,%s' % o.l10n_mx_edi_qr_code"
+                     alt="QR CFDI"
+                     style="width:120px; height:120px;"/>
+            </t>
+            <t t-else="">
+                <img alt="Barcode" t-att-src="cfdi_values.get('barcode_src')"/>
+            </t>
+        </xpath>
+    </template>
 </odoo>
