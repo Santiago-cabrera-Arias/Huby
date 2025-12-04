@@ -117,3 +117,20 @@ class AccountMove(models.Model):
             except Exception:
                 move.l10n_mx_edi_qr_code = False
 
+    # --- Monto en letras en español ---
+
+    def _get_amount_total_in_words_es(self):
+        """Devuelve el monto total en letras (ES) sin sufijo de moneda.
+
+        El template agrega luego ' M. N.', por eso aquí solo se retorna
+        'CINCUENTA PESOS 00/100' (por ejemplo).
+        """
+        self.ensure_one()
+        amount = self.amount_total or 0.0
+        amount_i, amount_d = divmod(amount, 1)
+        amount_d = round(amount_d, 2)
+        amount_d_int = int(round(amount_d * 100, 2))
+
+        lang = self.partner_id.lang or "es_MX"
+        words = self.currency_id.with_context(lang=lang).amount_to_text(amount_i)
+        return f"{words} {amount_d_int:02d}/100"
