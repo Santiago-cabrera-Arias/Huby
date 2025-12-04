@@ -63,7 +63,7 @@ class AccountMove(models.Model):
 
     # --- Cálculo de URL QR CFDI 4.0 (texto) ---
 
-    @api.depends("l10n_mx_edi_cfdi_uuid", "amount_total")
+    @api.depends("l10n_mx_edi_cfdi_uuid", "amount_total", "l10n_mx_edi_cfdi_attachment_id", "l10n_mx_edi_cfdi_sat_state")
     def _compute_x_l10n_mx_edi_qr_text(self):
         Document = self.env["l10n_mx_edi.document"]
         for move in self:
