@@ -1,40 +1,71 @@
-# -*- coding: utf-8 -*-
-"""Account Move helpers for Huby reports."""
+from io import BytesIO
 import base64
 
-# pylint: disable=import-error
-from odoo import models
-from odoo.modules.module import get_module_resource
+from odoo import api, fields, models
+
+try:
+    import qrcode
+except Exception:  # ImportError and any env-specific issues
+    qrcode = None
 
 
 class AccountMove(models.Model):
     _inherit = "account.move"
 
-    def _huby_static_image_base64(self, filename):
-        """Return the base64 representation of a static image bundled in the module."""
-        if not filename:
-            return False
-        resource_path = get_module_resource('huby_personalize', 'static', 'src', 'img', filename)
-        if not resource_path:
-            return False
-        try:
-            with open(resource_path, 'rb') as image_file:
-                return base64.b64encode(image_file.read()).decode('ascii')
-        except OSError:
-            return False
+    l10n_mx_edi_qr_code = fields.Binary(
+        string="QR CFDI",
+        readonly=True,
+        copy=False,
+        store=True,
+        compute="_compute_l10n_mx_edi_qr_code",
+        help="Imagen del código QR del CFDI.",
+    )
 
-    def _huby_invoice_logo(self):
-        return self._huby_static_image_base64('logo.png')
+    @api.depends("l10n_mx_edi_cfdi_attachment_id", "l10n_mx_edi_cfdi_sat_state", "amount_total")
+    def _compute_l10n_mx_edi_qr_code(self):
+        Document = self.env["l10n_mx_edi.document"]
+        for move in self:
+            if not move.l10n_mx_edi_cfdi_attachment_id or move.l10n_mx_edi_cfdi_sat_state != "valid":
+                move.l10n_mx_edi_qr_code = False
+                continue
 
-    def _huby_invoice_tagline(self):
-        return self._huby_static_image_base64('lema.png')
+            if qrcode is None:
+                move.l10n_mx_edi_qr_code = False
+                continue
 
-    def _huby_invoice_footer(self):
-        return self._huby_static_image_base64('pie_pagina.png')
+            try:
+                cfdi_raw = (
+                    move.with_context(bin_size=False)
+                    .l10n_mx_edi_cfdi_attachment_id.raw
+                )
+                cfdi_infos = Document._decode_cfdi_attachment(cfdi_raw) or {}
 
-    def _get_amount_total_in_words_es(self):
-        """Obtener el monto total en palabras en español."""
-        # Forzar el idioma español para la conversión de número a texto
-        currency = self.currency_id.with_context(lang='es_MX')
-        return currency.amount_to_text(self.amount_total)
+                uuid = cfdi_infos.get("uuid")
+                emisor = cfdi_infos.get("supplier_rfc")
+                receptor = cfdi_infos.get("customer_rfc")
+                sello = cfdi_infos.get("sello")
+
+                if not (uuid and emisor and receptor and sello):
+                    move.l10n_mx_edi_qr_code = False
+                    continue
+
+                try:
+                    total = float(move.amount_total)
+                    total_str = f"{total:.6f}"
+                except Exception:
+                    move.l10n_mx_edi_qr_code = False
+                    continue
+
+                fe = sello[-8:]
+                url = (
+                    "https://verificacfdi.facturaelectronica.sat.gob.mx/default.aspx"
+                    f"?id={uuid}&re={emisor}&rr={receptor}&tt={total_str}&fe={fe}"
+                )
+
+                buffer = BytesIO()
+                img = qrcode.make(url)
+                img.save(buffer, format="PNG")
+                move.l10n_mx_edi_qr_code = base64.b64encode(buffer.getvalue())
+            except Exception:
+                move.l10n_mx_edi_qr_code = False
 

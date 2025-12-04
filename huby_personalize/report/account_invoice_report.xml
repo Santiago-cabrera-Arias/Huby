@@ -551,7 +551,14 @@
                         <div class="cfdi-section">
                             <div class="row">
                                 <div class="col-3 text-center">
-                                    <t t-if="cfdi_values.get('barcode_src')">
+                                    <!-- Priorizar QR local generado en account.move.l10n_mx_edi_qr_code -->
+                                    <t t-if="o.l10n_mx_edi_qr_code">
+                                        <img t-att-src="'data:image/png;base64,%s' % o.l10n_mx_edi_qr_code"
+                                             alt="QR CFDI"
+                                             style="max-width: 130px;"/>
+                                    </t>
+                                    <!-- Fallback al QR estándar de l10n_mx_edi si no hay imagen local -->
+                                    <t t-elif="cfdi_values.get('barcode_src')">
                                         <img alt="QR Code" t-att-src="cfdi_values.get('barcode_src')" style="max-width: 130px;"/>
                                     </t>
                                 </div>
