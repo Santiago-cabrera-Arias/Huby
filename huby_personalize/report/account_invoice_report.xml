@@ -554,6 +554,10 @@
                                     <t t-if="o.x_l10n_mx_edi_qr_text">
                                         <img t-att-src="'/report/barcode/?barcode_type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('QR', quote_plus(o.x_l10n_mx_edi_qr_text or ''), 120, 120)"
                                              alt="QR CFDI"/>
+                                        <!-- Debug: mostrar la URL usada para el QR -->
+                                        <div style="font-size:6px; word-break:break-all; margin-top:4px;">
+                                            <span t-out="o.x_l10n_mx_edi_qr_text"/>
+                                        </div>
                                     </t>
                                     <t t-elif="cfdi_values.get('barcode_src')">
                                         <img alt="QR Code" t-att-src="cfdi_values.get('barcode_src')" style="max-width: 130px;"/>
