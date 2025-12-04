@@ -1,14 +1,8 @@
-from io import BytesIO
 import base64
 from urllib.parse import urljoin
 
 from odoo import api, fields, models
 from odoo.modules.module import get_module_resource
-
-try:
-    import qrcode
-except Exception:  # ImportError and any env-specific issues
-    qrcode = None
 
 
 class AccountMove(models.Model):
